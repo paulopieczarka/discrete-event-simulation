@@ -1,7 +1,8 @@
-const jssim = require('js-simulator')
+const { SimEvent } = require('js-simulator')
 
-class Ant {
-  constructor (id, grid, pheromones, x, y) {
+class Ant extends SimEvent {
+  constructor (id, grid, pheromones, x, y, simulation) {
+    super()
     this.id = id
     this.x = x
     this.y = y
@@ -15,6 +16,7 @@ class Ant {
     this.path = []
     this.age = 0
     this.life = 150
+    this.simulation = simulation
   }
 
   update () {
@@ -86,11 +88,11 @@ class Ant {
     return candidates
   }
 
-  selectMove () {
+  selectMove (candidates) {
     var heuristics = [];
     
-    var dx2 = target_x - this.x
-    var dy2 = target_y - this.y
+    var dx2 = this.simulation.target_x - this.x
+    var dy2 = this.simulation.target_y - this.y
     var dlen2 = Math.sqrt(dx2 * dx2 + dy2 * dy2)
     for(var i = 0; i < candidates.length; ++i) {
       var move = candidates[i]
@@ -98,7 +100,7 @@ class Ant {
       var dy = move.y - this.y
       var dlen = Math.sqrt(dx * dx + dy * dy)
         
-      var heuristic_b = ((dx * dx2 + dy * dy2) / (dlen * dlen2) + 1) / (tiles * tiles)
+      var heuristic_b = ((dx * dx2 + dy * dy2) / (dlen * dlen2) + 1) / (this.simulation.tiles * this.simulation.tiles)
       var heuristic_a = this.pheromones.getCell(move.x, move.y)
       var heuristic = heuristic_a * Math.pow(heuristic_b, 2.0)
         
@@ -145,7 +147,7 @@ class Ant {
     return -1
   }
 
-  moveTo () {
+  moveTo (act_x, act_y) {
     this.grid.setCell(this.x, this.y, 0)
     this.prev_x = this.x
     this.prev_y = this.y
@@ -154,3 +156,5 @@ class Ant {
     this.grid.setCell(this.x, this.y, 1)
   }
 }
+
+module.exports = Ant
