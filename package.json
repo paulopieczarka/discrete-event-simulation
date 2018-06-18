@@ -1,0 +1,16 @@
+{
+  "name": "discrete-event-simulation",
+  "version": "1.0.0",
+  "description": "Ant",
+  "main": "src/index.js",
+  "repository": "https://github.com/paulopieczarka/discrete-event-simulation.git",
+  "author": "paulopieczarka <paulopieczarka@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "js-simulator": "^1.0.17"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "watch": "nodemon src/index.js"
+  }
+}
