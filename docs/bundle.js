@@ -1159,10 +1159,15 @@ class Simulation {
 
     // random change target location
     if (Math.round((Math.random()*100)) === 0) {
-      console.log('change location', this.scheduler.current_time)
-      this.target_x = Math.round(Math.random()*this.tiles)
-      this.target_y = Math.round(Math.random()*this.tiles)
-      this.grid.createTarget(this.target_x, this.target_y, 2)
+      try {
+        this.target_x = Math.round(Math.random()*this.tiles - 8) + 4
+        this.target_y = Math.round(Math.random()*this.tiles - 8) + 4
+        if (!this.grid.isObstacle(this.target_x, this.target_y)) {
+          this.grid.createTarget(this.target_x, this.target_y, 2)
+          console.log('change location', this.scheduler.current_time, this.target_x, this.target_y)
+        }
+      }
+      catch (e) {}
     }
 
     this.scheduler.update()
