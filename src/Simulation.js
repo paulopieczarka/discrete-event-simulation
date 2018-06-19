@@ -4,13 +4,14 @@ const Ant = require('./Ant')
 
 class Simulation {
   constructor () {
-    this.target_x = 10
-    this.target_y = 10
     this.tiles = 128
+    this.target_x = Math.round(Math.random()*this.tiles - 8) + 4
+    this.target_y = Math.round(Math.random()*this.tiles - 8) + 4
     this.tau_0 = 1 / (this.tiles * this.tiles)
 
     // Scheduler
     this.scheduler = new Scheduler()
+    console.log('hello', this.scheduler)
 
     this.setupGrid()
     this.setupPheromones()
@@ -22,7 +23,7 @@ class Simulation {
     }
 
     // random change target location
-    if (Math.round((Math.random()*100)) === 0) {
+    if (Math.round((Math.random()*5000)) === 0) {
       try {
         this.target_x = Math.round(Math.random()*this.tiles - 8) + 4
         this.target_y = Math.round(Math.random()*this.tiles - 8) + 4
@@ -33,6 +34,13 @@ class Simulation {
       }
       catch (e) {}
     }
+
+    this.eventBox.innerHTML = `
+      <p>Current time: ${this.scheduler.current_time}</p>
+      <p>Events queue: ${this.scheduler.pq.s.length}</p>
+      <p>Inbox: ${this.scheduler.messenger.inbox.length}</p>
+      <p>Targets: ${this.grid.potentialField.length}</p>
+    `
 
     this.scheduler.update()
     this.grid.render(canvas)
@@ -57,6 +65,13 @@ class Simulation {
     this.grid.createCylinder(75, 35, 11)
     this.grid.createCylinder(103, 26, 11)
 
+    for (let i=0; i < 5; i++) {
+      let x = Math.round(Math.random()*this.tiles - 8) + 4
+      let y = Math.round(Math.random()*this.tiles - 8) + 4
+      let r = Math.round(Math.random()*10) + 10
+      this.grid.createCylinder(x, y, r)
+    }
+
     for(let x=0; x < this.tiles; x++){
       for(let y=0; y < this.tiles; y++) {
           this.pheromones.setCell(x, y, this.tau_0)
@@ -73,7 +88,7 @@ class Simulation {
         this.scheduler.scheduleRepeatingIn(ant, 1)
     }
 
-    this.scheduler.scheduleRepeatingIn(new Evaporator(this.pheromones, this.grid), 1)
+    this.scheduler.scheduleRepeatingIn(new Evaporator(this.pheromones, this.grid, this), 1)
   }
 
   setupGrid () {
@@ -81,13 +96,23 @@ class Simulation {
     this.grid.cellWidth = 5
     this.grid.cellHeight = 5
     this.grid.showTrails = true
-    this.grid.showPotentialFiel = true
+    this.grid.showPotentialField = true
+    this.grid.color = '#000000';
+    this.grid.trailColor = '#ffffff';
+    this.grid.obstacleColor = '#0000ff';
+    this.grid.targetColor = '#39ff49';
   }
 
   setupPheromones () {
     this.pheromones = new Grid(this.tiles, this.tiles)
     this.pheromones.cellWidth = 5
     this.pheromones.cellHeight = 5
+  }
+
+  enableDebug (toolbar, eventBox) {
+    this.toolbar = toolbar
+    this.eventBox = eventBox
+    this.eventBox.innerHTML = 'test'
   }
 }
 

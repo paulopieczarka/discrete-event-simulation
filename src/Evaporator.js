@@ -1,19 +1,20 @@
 const { SimEvent } = require('js-simulator')
 
 class Evaporator extends SimEvent {
-  constructor (pheromones, grid) {
-    super()
+  constructor (pheromones, grid, simulation) {
+    super(1)
+    this.simulation = simulation
     this.pheromones = pheromones
     this.grid = grid
   }
 
   update () {
-    for (let x=0; x < this.tiles; x++) {
-      for (let y=0; y < this.tiles; y++) {
+    for (let x=0; x < this.simulation.tiles; x++) {
+      for (let y=0; y < this.simulation.tiles; y++) {
         let t = .9 * this.pheromones.getCell(x, y)
 
-        if (t < this.tau_0) {
-          t = tau_0
+        if (t < this.simulation.tau_0) {
+          t = this.simulation.tau_0
           this.grid.setPotential(x, y, 0)
         }
         else {

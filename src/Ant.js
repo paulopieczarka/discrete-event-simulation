@@ -2,7 +2,7 @@ const { SimEvent } = require('js-simulator')
 
 class Ant extends SimEvent {
   constructor (id, grid, pheromones, x, y, simulation) {
-    super()
+    super(2)
     this.id = id
     this.x = x
     this.y = y
@@ -15,7 +15,7 @@ class Ant extends SimEvent {
     this.grid.setCell(this.x, this.y, 1)
     this.path = []
     this.age = 0
-    this.life = 150
+    this.life = Math.floor(Math.random()*150) + 150
     this.simulation = simulation
   }
 
